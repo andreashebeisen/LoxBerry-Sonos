@@ -125,7 +125,6 @@ function nextradio() {
 	}
 	$sonos = new SonosAccess($config['sonoszonen'][$master][0]);
 	$sonos->ClearQueue();
-		$playstatus = $sonos->GetTransportInfo();
 	$radioname = $sonos->GetMediaInfo();
 	#print_r($radioname);
 	if (!empty($radioname["title"])) {
@@ -167,10 +166,15 @@ function nextradio() {
 	$coord = getRoomCoordinator($master);
 	$sonos = new SonosAccess($coord[0]);
 	$sonos->SetMute(false);
-	if (isset($_GET['profile']) or isset($_GET['Profile']))    {
-		$volume = $lookup[0]['Player'][$master][0]['Volume'];
+	
+	$transportInfo = $sonos->GetTransportInfo();
+	if ($transportInfo != "1") { // only adjust volume if playback has not already started
+		if (isset($_GET['profile']) or isset($_GET['Profile'])) {
+			$volume = $lookup[0]['Player'][$master][0]['Volume'];
+		}
+		$sonos->SetVolume($volume);
 	}
-	$sonos->SetVolume($volume);
+	
 	$sonos->Play();
 	LOGGING("radio.php: Radio Station '".$act."' has been loaded successful by nextradio",6);
 }
