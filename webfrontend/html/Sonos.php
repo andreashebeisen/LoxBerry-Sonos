@@ -789,10 +789,10 @@ if(array_key_exists($_GET['zone'], $sonoszone)){
 				LOGDEB("sonos.php Nextpush has been executed. Playlist was running");
 				next_dynamic();
 			}
-			if (isset($_GET['profile']) or isset($_GET['Profile']))    {
-				$volume = $lookup[0]['Player'][$master][0]['Volume'];
-			} 
-			$sonos->SetVolume($volume);
+			// if (isset($_GET['profile']) or isset($_GET['Profile']))    {
+			// 	$volume = $lookup[0]['Player'][$master][0]['Volume'];
+			// } 
+			// $sonos->SetVolume($volume);
 		break;
 		
 		
