@@ -408,6 +408,12 @@ if(array_key_exists($_GET['zone'], $sonoszone)){
 	$sonos = new SonosAccess($sonoszone[$master][0]); //Sonos IP Adresse
 	switch($_GET['action'])	{
 		case 'play';
+			$transportInfo = $sonos->GetTransportInfo();
+			if ($transportInfo == "1") {
+				LOGGING("sonos.php: Current State is PLAYING. Canceled action play.", 7);
+				return;
+			}
+
 			$posinfo = $sonos->GetPositionInfo();
 			if(!empty($posinfo['TrackURI'])) {
 				if(empty($config['TTS']['volrampto'])) {
