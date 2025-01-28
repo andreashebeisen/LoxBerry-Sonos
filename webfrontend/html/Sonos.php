@@ -771,6 +771,11 @@ if(array_key_exists($_GET['zone'], $sonoszone)){
 			
 			// Nichts läuft
 			if ((empty($posinfo['TrackURI'])) and (empty($posinfo["UpnpClass"])))  {
+				if (isset($_GET['profile']) or isset($_GET['Profile']))    {
+					$volume = $lookup[0]['Player'][$master][0]['Volume'];
+				} 
+				$sonos->SetVolume($volume);
+				
 				nextradio();
 				LOGDEB("sonos.php Nextpush has been executed. Queue was empty");
 			}
@@ -789,10 +794,6 @@ if(array_key_exists($_GET['zone'], $sonoszone)){
 				LOGDEB("sonos.php Nextpush has been executed. Playlist was running");
 				next_dynamic();
 			}
-			// if (isset($_GET['profile']) or isset($_GET['Profile']))    {
-			// 	$volume = $lookup[0]['Player'][$master][0]['Volume'];
-			// } 
-			// $sonos->SetVolume($volume);
 		break;
 		
 		
