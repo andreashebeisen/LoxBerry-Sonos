@@ -16,8 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
-        working-directory: ./docs
         with:
+          cache-dependency-path: docs/package-lock.json
           node-version: 18
           cache: npm
 
