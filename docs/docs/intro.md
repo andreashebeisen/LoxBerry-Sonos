@@ -32,9 +32,9 @@ Um einen möglichst reibungslosen Betrieb des Plugins zu gewährleisten MÜSSEN 
 
 ### Zusammenfassung
 
-  * **Alle Sonos Player am Netz lassen**
-  * **Sonos Bridge aus dem Netzwerk entfernen**
-  * **Sonos Player mit statischer IP Adressierung**
+- **Alle Sonos Player am Netz lassen**
+- **Sonos Bridge aus dem Netzwerk entfernen**
+- **Sonos Player mit statischer IP Adressierung**
 
 :::danger
 
