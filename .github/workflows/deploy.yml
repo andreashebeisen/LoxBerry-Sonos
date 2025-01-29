@@ -1,8 +1,5 @@
 name: Deploy to GitHub Pages
 
-defaults:
-  run:
-    working-directory: ./docs
 on:
   push:
     branches:
@@ -24,12 +21,15 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        working-directory: ./docs
         run: npm ci
       - name: Build website
+        working-directory: ./docs
         run: npm run build
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
+        working-directory: ./docs
         with:
           path: build
 
