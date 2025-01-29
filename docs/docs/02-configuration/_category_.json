@@ -1,0 +1,9 @@
+{
+  "label": "Konfiguration",
+  "position": 3,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Über die Weboberfläche können weitere Feinstellungen am Plugin vorgenommen werden."
+  }
+}

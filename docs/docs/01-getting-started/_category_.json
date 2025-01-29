@@ -1,0 +1,9 @@
+{
+  "label": "Erste Schritte",
+  "position": 2,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "description": "Als erstes muss eine Grundkonfiguration durchgeführt werden. Das heißt im Detail die vorhanden Sonos Player hinzufügen und diverse Parameter ergänzen."
+  }
+}
