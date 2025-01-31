@@ -37,7 +37,8 @@ const config = {
   },
   
   plugins: [[ require.resolve('docusaurus-lunr-search'), {
-    languages: ['en', 'de'] // language codes
+    languages: ['en', 'de'], // language codes
+    highlightResults: true, // Highlight the search results in the search page
   }]],
 
   presets: [
