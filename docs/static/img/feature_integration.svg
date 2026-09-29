@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="feat-integration-title">
+  <title id="feat-integration-title">Sonos Lautsprecher verbunden mit dem SmartHome</title>
+  <!-- background blob -->
+  <circle cx="100" cy="104" r="88" fill="#6dac20" opacity="0.12"/>
+  <!-- house -->
+  <path d="M108 92 L146 62 L184 92 L184 150 L108 150 Z" fill="#ffffff" stroke="#5d6470" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M100 96 L146 57 L192 96" fill="none" stroke="#6dac20" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- smart home controller (green square) -->
+  <rect x="130" y="98" width="32" height="32" rx="6" fill="#6dac20"/>
+  <rect x="138" y="106" width="16" height="16" rx="2" fill="#ffffff"/>
+  <circle cx="146" cy="114" r="3" fill="#6dac20"/>
+  <!-- speaker -->
+  <rect x="14" y="66" width="56" height="96" rx="14" fill="#2b2f36" stroke="#8a8f98" stroke-width="2"/>
+  <rect x="20" y="72" width="44" height="84" rx="10" fill="#3a3f48"/>
+  <g fill="#8a8f98">
+    <circle cx="30" cy="84" r="2.2"/><circle cx="38" cy="84" r="2.2"/><circle cx="46" cy="84" r="2.2"/><circle cx="54" cy="84" r="2.2"/>
+    <circle cx="30" cy="92" r="2.2"/><circle cx="38" cy="92" r="2.2"/><circle cx="46" cy="92" r="2.2"/><circle cx="54" cy="92" r="2.2"/>
+    <circle cx="30" cy="100" r="2.2"/><circle cx="38" cy="100" r="2.2"/><circle cx="46" cy="100" r="2.2"/><circle cx="54" cy="100" r="2.2"/>
+    <circle cx="30" cy="108" r="2.2"/><circle cx="38" cy="108" r="2.2"/><circle cx="46" cy="108" r="2.2"/><circle cx="54" cy="108" r="2.2"/>
+    <circle cx="30" cy="116" r="2.2"/><circle cx="38" cy="116" r="2.2"/><circle cx="46" cy="116" r="2.2"/><circle cx="54" cy="116" r="2.2"/>
+    <circle cx="30" cy="124" r="2.2"/><circle cx="38" cy="124" r="2.2"/><circle cx="46" cy="124" r="2.2"/><circle cx="54" cy="124" r="2.2"/>
+    <circle cx="30" cy="132" r="2.2"/><circle cx="38" cy="132" r="2.2"/><circle cx="46" cy="132" r="2.2"/><circle cx="54" cy="132" r="2.2"/>
+    <circle cx="30" cy="140" r="2.2"/><circle cx="38" cy="140" r="2.2"/><circle cx="46" cy="140" r="2.2"/><circle cx="54" cy="140" r="2.2"/>
+  </g>
+  <circle cx="42" cy="150" r="2" fill="#6dac20"/>
+  <!-- signal waves between speaker and house -->
+  <g fill="none" stroke="#6dac20" stroke-width="5" stroke-linecap="round">
+    <path d="M76 100 Q82 114 76 128"/>
+    <path d="M85 92 Q95 114 85 136" opacity="0.7"/>
+    <path d="M94 84 Q107 114 94 144" opacity="0.4"/>
+  </g>
+  <!-- music notes -->
+  <g fill="#6dac20">
+    <ellipse cx="34" cy="50" rx="6" ry="4.5" transform="rotate(-20 34 50)"/>
+    <rect x="38" y="24" width="3" height="26"/>
+    <path d="M41 24 Q52 28 50 38 Q48 31 41 30 Z"/>
+    <ellipse cx="62" cy="40" rx="5" ry="3.8" transform="rotate(-20 62 40)"/>
+    <rect x="65.5" y="18" width="2.6" height="22"/>
+  </g>
+  <!-- ground -->
+  <rect x="10" y="166" width="184" height="4" rx="2" fill="#8a8f98" opacity="0.5"/>
+</svg>

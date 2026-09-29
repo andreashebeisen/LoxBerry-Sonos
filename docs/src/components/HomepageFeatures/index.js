@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: 'Einfache Integration',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('@site/static/img/feature_integration.svg').default,
     description: (
       <>
         Integriere dein Sonos Multiroom System in Loxone und andere SmartHome-Systeme.
@@ -14,7 +14,7 @@ const FeatureList = [
   },
   {
     title: 'Läuft auf LoxBerry',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('@site/static/img/feature_loxberry.svg').default,
     description: (
       <>
         Einfache Installation des Plugins auf deinem LoxBerry ({'>='} v3.0).
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'Powered by PHP',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('@site/static/img/feature_php.svg').default,
     description: (
       <>
         Einfach erweiterbarer Code auf Basis von PHP.

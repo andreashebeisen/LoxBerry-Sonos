@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="feat-loxberry-title">
+  <title id="feat-loxberry-title">Einplatinencomputer mit Himbeere – LoxBerry</title>
+  <circle cx="100" cy="104" r="88" fill="#6dac20" opacity="0.12"/>
+  <!-- circuit board -->
+  <rect x="22" y="70" width="156" height="100" rx="10" fill="#3f8a3a"/>
+  <rect x="22" y="70" width="156" height="100" rx="10" fill="none" stroke="#2c6429" stroke-width="3"/>
+  <!-- mounting holes -->
+  <g fill="#e9c46a"><circle cx="34" cy="82" r="5"/><circle cx="166" cy="82" r="5"/><circle cx="34" cy="158" r="5"/><circle cx="166" cy="158" r="5"/></g>
+  <g fill="#3f8a3a"><circle cx="34" cy="82" r="2.5"/><circle cx="166" cy="82" r="2.5"/><circle cx="34" cy="158" r="2.5"/><circle cx="166" cy="158" r="2.5"/></g>
+  <!-- GPIO header -->
+  <rect x="48" y="76" width="104" height="12" rx="2" fill="#2b2f36"/>
+  <g fill="#e9c46a">
+    <rect x="52" y="79" width="4" height="6"/><rect x="60" y="79" width="4" height="6"/><rect x="68" y="79" width="4" height="6"/><rect x="76" y="79" width="4" height="6"/>
+    <rect x="84" y="79" width="4" height="6"/><rect x="92" y="79" width="4" height="6"/><rect x="100" y="79" width="4" height="6"/><rect x="108" y="79" width="4" height="6"/>
+    <rect x="116" y="79" width="4" height="6"/><rect x="124" y="79" width="4" height="6"/><rect x="132" y="79" width="4" height="6"/><rect x="140" y="79" width="4" height="6"/>
+  </g>
+  <!-- CPU -->
+  <rect x="64" y="104" width="40" height="40" rx="4" fill="#2b2f36"/>
+  <rect x="72" y="112" width="24" height="24" rx="2" fill="#3a3f48"/>
+  <!-- traces -->
+  <g fill="none" stroke="#7bc47a" stroke-width="2" stroke-linecap="round">
+    <path d="M104 116 H122 V100 H150"/>
+    <path d="M104 128 H130 V140 H150"/>
+    <path d="M64 124 H44 V104"/>
+  </g>
+  <!-- ports -->
+  <rect x="150" y="94" width="34" height="16" rx="2" fill="#c9ccd1"/>
+  <rect x="150" y="116" width="34" height="16" rx="2" fill="#c9ccd1"/>
+  <rect x="150" y="138" width="34" height="22" rx="2" fill="#aeb3ba"/>
+  <rect x="156" y="144" width="22" height="10" rx="1" fill="#6b717b"/>
+  <!-- raspberry -->
+  <g transform="translate(100 38)">
+    <path d="M-10 -22 Q-2 -12 0 -14 Q2 -12 10 -22 Q4 -10 0 -10 Q-4 -10 -10 -22 Z" fill="#6dac20"/>
+    <path d="M-16 -14 Q-6 -16 0 -10 Q6 -16 16 -14 Q10 -6 0 -8 Q-10 -6 -16 -14 Z" fill="#6dac20"/>
+    <g fill="#c7254e">
+      <circle cx="-9" cy="0" r="7"/><circle cx="0" cy="-3" r="7"/><circle cx="9" cy="0" r="7"/>
+      <circle cx="-5" cy="10" r="7"/><circle cx="5" cy="10" r="7"/><circle cx="0" cy="19" r="6.5"/>
+    </g>
+    <g fill="#e05577">
+      <circle cx="-11" cy="-2" r="2"/><circle cx="-2" cy="-5" r="2"/><circle cx="7" cy="-2" r="2"/>
+      <circle cx="-7" cy="8" r="2"/><circle cx="3" cy="8" r="2"/><circle cx="-2" cy="17" r="1.8"/>
+    </g>
+  </g>
+  <!-- LEDs -->
+  <circle cx="44" cy="146" r="3.5" fill="#ff5a5a"/>
+  <circle cx="44" cy="136" r="3.5" fill="#7ee27a"/>
+</svg>
