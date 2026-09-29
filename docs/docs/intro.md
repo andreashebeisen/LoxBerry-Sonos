@@ -6,9 +6,9 @@ sidebar_position: 1
 
 ## Aufgabe des Plugins
 
-Das Plugin dient zur Steuerung einer Sonos Multi Room Installation aus Loxone heraus. Es stehen die gängigen Standardbefehle, aber auch Text-to-speech (T2S), Sonos-to-speech, Clock-to-speech, bei installiertem Wunderground Plugin auch weather-to-speech und sonstige Befehle zur Verfügung. Darüberhinaus können auch Werte (z.B. Temperatur oder Fensterstatus) von Loxone in die text-to-speech Ansagen integriert werden. 
+Das Plugin dient zur Steuerung einer Sonos Multi Room Installation aus Loxone heraus. Es stehen die gängigen Standardbefehle, aber auch Text-to-speech (T2S), Sonos-to-speech, Clock-to-speech, bei installiertem Weather4Lox Plugin auch weather-to-speech, außerdem Wetterwarnungen, Pollenflug, Fahrzeit-, Abfall- und Kalenderansagen (CalDAV-4-Lox Plugin) und sonstige Befehle zur Verfügung. Darüberhinaus können auch Werte (z.B. Temperatur oder Fensterstatus) von Loxone in die text-to-speech Ansagen integriert werden. 
 
-Zusätzlich werden Informationen wie Titel/Interpret, Play/Stop/Pause und Lautstärke je Zone per UDP oder MQTT und über virtuelle Texteingangsverbinder zur Verfügung gestellt.
+Zusätzlich werden Informationen wie Titel/Interpret, Play/Stop/Pause, Lautstärke, Gruppierung, Klangeinstellungen und Wiedergabeposition je Zone nahezu in Echtzeit per MQTT (optional zusätzlich per UDP) sowie über virtuelle Texteingänge (HTTP) an den Miniserver übertragen. Details unter [Loxone-Anbindung](./03-integration/loxone.md) und [MQTT](./02-configuration/mqtt.md).
 
 :::note
 
@@ -39,12 +39,12 @@ Um einen möglichst reibungslosen Betrieb des Plugins zu gewährleisten MÜSSEN 
 
 :::warning[Probleme mit Player Discovery]
 
-Falls nach der Player Suche keine neuen Player erscheinen, die Multicast Einstellungen im Netzwerk prüfen (Fritzbox, Switch, Firewall, Virenscanner). Das Plugin nutzt SSDP/UPnP mit Multicast-Adresse **239.255.255.250 Port 1900**. Alternativ den UNICAST Scan mit Eingabe der Sonos Player ID ausführen.
+Falls nach der Player Suche keine neuen Player erscheinen, die Multicast Einstellungen im Netzwerk prüfen (Fritzbox, Switch, Firewall, Virenscanner). Das Plugin nutzt SSDP/UPnP mit Multicast-Adresse **239.255.255.250 Port 1900**. Alternativ den UNICAST Scan mit Eingabe der IP-Adresse(n) der Sonos Player ausführen (siehe [Zonen hinzufügen](./01-getting-started/add-zones.md#sonos-zonen-hinzufügen)).
 
 :::
 
 :::danger
 
-Wer Fehler in der Dokumentaiton findet darf sie gerne behalten oder selber korrigieren.
+Wer Fehler in der Dokumentation findet darf sie gerne behalten oder selber korrigieren.
 
 :::

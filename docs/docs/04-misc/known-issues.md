@@ -15,4 +15,6 @@ description: Umsetzungsstand zu bekannten Problemen
 - T2S bei Playlisten im Shuffle Modus (erneute Wiedergabe der Playliste an gleicher Position nur mit anderem Titel)  **→ erledigt**
 - gegenwärtige Lautstärke soll beibehalten werden anstatt entweder Standard Lautstärke bzw. Volume Angabe aus der Syntax **→ erledigt**
 - bei Nutzung der Spotify App zur Musikwiedergabe wird Sonos Playliste nach T2S aufgerufen. → **verworfen (würde eine weitere komplette Entwicklung sein)**
+- Seit der Umstellung auf den neuen Action Router werden nicht mehr existierende Befehle abgelehnt. Bestehende Ausgangsbefehle ggf. anpassen, siehe [Entfernte Befehle](../03-integration/actions-extended.md#entfernte-befehle).
+- Einige gültige URL-Parameter (z. B. `greet`, `clip`, `paused`) erzeugen im Log die Warnung "Unknown URL parameter", werden aber trotzdem ausgeführt.
 - Inkompatible Netzwerk-Hardware (Router): [Hardware-Liste](https://support.sonos.com/de-de/article/incompatible-network-hardware)

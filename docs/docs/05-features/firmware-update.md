@@ -5,14 +5,15 @@ description: Automatisches Firmware-Update der Sonos Player
 
 # Auto-Update Sonos Firmware
 
-_Ab v5.5.0._ Das Plugin prüft je Player ob ein Firmware-Update verfügbar ist und führt es automatisch durch. Die Updatefrequenz ist in den [Optionen](../02-configuration/options.md#auto-update-sonos-firmware) konfigurierbar. Option "**Power On**": ausgeschaltete Player vor dem Update einschalten und danach wieder ausschalten.
+Das Plugin prüft stündlich, ob der konfigurierte Update-Zeitpunkt erreicht ist, und führt dann je Player ein verfügbares Firmware-Update automatisch durch. Starttag (täglich oder ein bestimmter Wochentag) und Uhrzeit sind in den [Optionen](../02-configuration/options.md#auto-update-sonos-firmware) konfigurierbar. Ob für einen Player ein Update verfügbar ist, kann mit `...action=update` im Browser geprüft werden.
+
+Option "**Power On**": ausgeschaltete Player (schaltbare Steckdose) werden vor dem Update eingeschaltet (Wartezeit ca. 7 Minuten, bis alle Player online sind) und danach wieder ausgeschaltet. Dazu sendet das Plugin ein Signal an den Miniserver, mit dem die Steckdosen geschaltet werden können.
 
  ![Auto-Update Konfiguration](./img/sw_update.png)
  ![Auto-Update Details](./img/sw_update_det.png)
 
-Voraussetzung: aktivierte **MQTT** oder **UDP** Kommunikation zum Miniserver (siehe [Loxone-Anbindung](../03-integration/loxone.md#eingangsseitig-sonos--miniserver)).
+Voraussetzung für das Signal: aktivierte [Ausgehende Datenübertragung](../03-integration/loxone.md#eingangsseitig-sonos--miniserver) **mit konfiguriertem UDP-Port**.
 
 | Protokoll | Eingangs-Syntax im MS | Wert |
 | --- | --- | --- |
-| MQTT | `Sonos4lox_update` | 1 oder 0 |
-| UDP | `Sonos4lox: update` | 1 oder 0 |
+| UDP | `Sonos4lox: update@\v` | 1 = Player einschalten (vor dem Update), 0 = Player ausschalten (nach dem Update) |

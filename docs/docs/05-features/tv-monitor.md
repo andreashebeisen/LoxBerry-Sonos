@@ -5,7 +5,7 @@ description: Automatisches Umschalten zwischen Musik und TV an Soundbars
 
 # TV-Monitor
 
-_Ab v5.3.3._ Ermöglicht das automatische Monitoren des Signals am HDMI/SPDIF-Eingang einer Soundbar (PLAYBASE, BEAM usw.).
+Ermöglicht das automatische Monitoren des Signals am HDMI/SPDIF-Eingang einer Soundbar (PLAYBASE, BEAM, ARC usw.).
 
  ![TV-Monitor](./img/TVMonitor.png)
 
@@ -13,31 +13,30 @@ _Ab v5.3.3._ Ermöglicht das automatische Monitoren des Signals am HDMI/SPDIF-Ei
 
 ## Ablauf
 
-  * Solange Musik/Radio läuft: Plugin speichert laufend alle notwendigen Informationen (Titel, Sender, Lautstärke, Gruppenstruktur) für einen späteren Restore.
-  * TV einschalten → anliegendes HDMI/SPDIF-Signal erkannt → Speichern wird unterbrochen, vordefinierte TV-Lautstärke wird gesetzt, Soundbar wechselt auf TV-Modus.
+Das Plugin prüft ca. alle 10 Sekunden den Eingang der Soundbar.
+
+  * Solange Musik/Radio läuft: Plugin speichert laufend alle notwendigen Informationen (Titel, Sender, Lautstärke, Klangeinstellungen, Gruppenstruktur) für einen späteren Restore.
+  * TV einschalten → anliegendes HDMI/SPDIF-Signal erkannt → Speichern wird unterbrochen, die hinterlegten TV-Einstellungen (Lautstärke, Höhen/Bass, Sprachverbesserung, Surround, Sub) werden gesetzt, ab der eingestellten Uhrzeit "ab" die Nacht-Einstellungen. Optional werden die unter "Stop Player bei Ein" gewählten Player gestoppt.
   * TV ausschalten → vorheriger Musik-/Radiostatus wird automatisch wiederhergestellt, analog zu den T2S-Funktionen.
+  * Außerhalb des konfigurierten Zeitfensters werden beim Ausschalten nur die Klangeinstellungen, nicht aber die Wiedergabe wiederhergestellt.
 
 Das Ganze funktioniert auch mit Gruppen, egal ob die Soundbar Master oder Member ist. Einzige Ausnahme: War die Soundbar Master einer Gruppe, wird sie beim Restore-Prozess als Member hinzugefügt.
 
 ## Konfiguration
 
-  * TV-Monitor in der Plugin-Config aktivieren (nur sichtbar wenn bei Update/Installation eine Soundbar detektiert wurde)
-  * Zeitraum für aktives Monitoring festlegen (z. B. bis 22:00 Uhr), damit das TV-Ausschalten nach 22 Uhr nicht automatisch Musik startet
-  * TV-Lautstärke je Soundbar in der Config hinterlegen – ohne diesen Wert funktioniert das Monitoring nicht
+  * TV-Monitor in der Plugin-Config aktivieren (nur sichtbar wenn eine Soundbar detektiert wurde), siehe [TV Monitor Einstellungen](../01-getting-started/configuration.md#tv-monitor)
+  * Zeitraum für aktives Monitoring festlegen (Standard 10–22 Uhr), damit z. B. das TV-Ausschalten nach 22 Uhr nicht automatisch Musik startet
+  * Je Soundbar das Monitoring einschalten und die TV-Lautstärke hinterlegen – ohne diesen Wert funktioniert das Monitoring nicht. Optional Höhen, Bass, Sprachverbesserung, Surround/Sub inkl. Level sowie Nacht-Einstellungen
 
 Die Funktion wurde mit **Sonos BEAM Gen2** und **Samsung TV Frame** getestet.
 
 ## Diagnose bei Problemen
 
-Sonos-Log und PHP-Log prüfen. Falls dort kein Fehler erscheint, folgenden Befehl im Browser ausführen – jeweils für alle 4 Szenarien (vorher in der Sonos App eine Playlist starten):
+Sonos-Log und PHP-Log prüfen. Falls dort kein Fehler erscheint, folgende Befehle im Browser ausführen – jeweils für die Szenarien Musik/Radio und TV eingeschaltet:
 
 ```
-http://<LOXBERRY-IP>/plugins/sonos4lox/index.php/?zone=<DEINE_SOUNDBAR>&action=streammode
+http://<LOXBERRY-IP>/plugins/sonos4lox/index.php/?zone=<DEINE_SOUNDBAR>&action=getpositioninfo
+http://<LOXBERRY-IP>/plugins/sonos4lox/index.php/?zone=<DEINE_SOUNDBAR>&action=getaudioinputattributes
 ```
 
-Werte für die 4 Szenarien notieren und ggf. [melden](../04-misc/error-reporting.md):
-
-  * Wert Musik/Radio:
-  * Wert TV Mode:
-  * Wert Soundbar als Master einer Gruppe:
-  * Wert Soundbar als Member einer Gruppe:
+Im TV-Betrieb beginnt die `TrackURI` mit `x-sonos-htastream:`. Die Ausgaben ggf. [melden](../04-misc/error-reporting.md).
