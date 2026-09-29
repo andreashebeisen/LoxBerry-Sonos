@@ -1,118 +1,268 @@
 #!/bin/sh
 
-# Bash script which is executed in case of an update (if this plugin is already
-# installed on the system). This script is executed as very first step (*BEFORE*
-# preinstall.sh) and can be used e.g. to save existing configfiles to /tmp 
-# during installation. Use with caution and remember, that all systems may be
-# different!
+# Sonos4Lox preupgrade.sh
+# Version: PREUPGRADE_MEMORY_SAFE_V02_2026_06_24
 #
-# Exit code must be 0 if executed successfull. 
-# Exit code 1 gives a warning but continues installation.
-# Exit code 2 cancels installation.
+# Executed before an update if the plugin is already installed.
+# Runs as user "loxberry".
+# Exit code 0: success
+# Exit code 1: warning, installation continues
+# Exit code 2: cancel installation
 #
-# Will be executed as user "loxberry".
-#
-# You can use all vars from /etc/environment in this script.
-#
-# We add 5 additional arguments when executing this script:
-# command <TEMPFOLDER> <NAME> <FOLDER> <VERSION> <BASEFOLDER>
-#
-# For logging, print to STDOUT. You can use the following tags for showing
-# different colorized information during plugin installation:
-#
-# <OK> This was ok!"
-# <INFO> This is just for your information."
-# <WARNING> This is a warning!"
-# <ERROR> This is an error!"
-# <FAIL> This is a fail!"
+# Memory-safe changes in V02:
+# - Keep /tmp upgrade backup small to avoid filling zram-backed /tmp.
+# - Move large TTS data and Piper voice files to a persistent upgrade folder
+#   instead of copying them to /tmp.
+# - Do not copy logs into /tmp during upgrade; logs are not required for restore.
 
-# To use important variables from command line use the following code:
-COMMAND=$0    # Zero argument is shell command
-PTEMPDIR=$1   # First argument is temp folder during install
-PSHNAME=$2    # Second argument is Plugin-Name for scipts etc.
-PDIR=$3       # Third argument is Plugin installation folder
-PVERSION=$4   # Forth argument is Plugin version
-LBHOMEDIR=$5  # Comes from /etc/environment now. Fifth argument is
-              # Base folder of LoxBerry
+COMMAND=$0
+PTEMPDIR=$1
+PSHNAME=$2
+PDIR=$3
+PVERSION=$4
+LBHOMEDIR=$5
 
-# Combine them with /etc/environment
 PCGI=$LBPCGI/$PDIR
 PHTML=$LBPHTML/$PDIR
 PTEMPL=$LBPTEMPL/$PDIR
 PDATA=$LBPDATA/$PDIR
-PLOG=$LBPLOG/$PDIR # Note! This is stored on a Ramdisk now!
+PLOG=$LBPLOG/$PDIR
 PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
+log_info() { echo "<INFO> $1"; }
+log_ok() { echo "<OK> $1"; }
+log_warning() { echo "<WARNING> $1"; }
+log_error() { echo "<ERROR> $1"; }
 
-DIR=$LBPDATA/$PDIR/backup
+abort_install() {
+	log_error "$1"
+	exit 2
+}
 
-if [ -d "$DIR" ]; then
-  echo "<INFO> Delete previous Plugin Backup folder"
-  rm -r $LBPDATA/$PDIR/backup
-else
-  echo "<INFO> No Backup folder exist"
+log_space_status() {
+	LABEL=$1
+	log_info "Space status ($LABEL)"
+	if command -v df >/dev/null 2>&1; then
+		df -h /tmp "$LBHOMEDIR" 2>/dev/null | sed 's/^/<INFO>   /'
+	fi
+	if command -v zramctl >/dev/null 2>&1; then
+		zramctl 2>/dev/null | sed 's/^/<INFO>   /'
+	elif [ -f /proc/swaps ]; then
+		grep zram /proc/swaps 2>/dev/null | sed 's/^/<INFO>   /'
+	fi
+}
+
+log_dir_size() {
+	LABEL=$1
+	DIR=$2
+	if [ -d "$DIR" ] && command -v du >/dev/null 2>&1; then
+		SIZE=$(du -sh "$DIR" 2>/dev/null | awk '{print $1}')
+		[ -n "$SIZE" ] && log_info "$LABEL size: $SIZE ($DIR)"
+	fi
+}
+
+copy_dir_contents_required() {
+	SRC_DIR=$1
+	DST_DIR=$2
+	LABEL=$3
+
+	if [ ! -d "$SRC_DIR" ]; then
+		abort_install "$LABEL source folder is missing: $SRC_DIR"
+	fi
+
+	mkdir -p "$DST_DIR" || abort_install "Could not create $LABEL backup folder: $DST_DIR"
+
+	cp -p -r "$SRC_DIR/." "$DST_DIR/"
+	RC=$?
+
+	if [ $RC -ne 0 ]; then
+		abort_install "$LABEL backup failed from $SRC_DIR to $DST_DIR (exit code $RC)"
+	fi
+
+	log_ok "$LABEL backup completed: $DST_DIR"
+}
+
+copy_dir_contents_optional() {
+	SRC_DIR=$1
+	DST_DIR=$2
+	LABEL=$3
+
+	if [ ! -d "$SRC_DIR" ]; then
+		log_warning "$LABEL source folder does not exist, skipping: $SRC_DIR"
+		return 0
+	fi
+
+	mkdir -p "$DST_DIR" || {
+		log_warning "Could not create $LABEL backup folder, skipping: $DST_DIR"
+		return 1
+	}
+
+	cp -p -r "$SRC_DIR/." "$DST_DIR/"
+	RC=$?
+
+	if [ $RC -ne 0 ]; then
+		log_warning "$LABEL backup failed from $SRC_DIR to $DST_DIR (exit code $RC)"
+		return 1
+	fi
+
+	log_ok "$LABEL backup completed: $DST_DIR"
+	return 0
+}
+
+copy_data_light_optional() {
+	SRC_DIR=$1
+	DST_DIR=$2
+	LABEL=$3
+
+	if [ ! -d "$SRC_DIR" ]; then
+		log_warning "$LABEL source folder does not exist, skipping: $SRC_DIR"
+		return 0
+	fi
+
+	mkdir -p "$DST_DIR" || {
+		log_warning "Could not create $LABEL backup folder, skipping: $DST_DIR"
+		return 1
+	}
+
+	# Keep the /tmp backup small. Large/generated data is handled by move_large_dir_to_persistent_backup().
+	# Exclusions intentionally cover common TTS/audio/model/cache payloads.
+	if tar -cf - \
+		-C "$SRC_DIR" \
+		--exclude='./tts' \
+		--exclude='./tts/*' \
+		--exclude='./.upgrade*' \
+		--exclude='*.mp3' \
+		--exclude='*.wav' \
+		--exclude='*.flac' \
+		--exclude='*.ogg' \
+		--exclude='*.onnx' \
+		--exclude='*.onnx.json' \
+		. | tar -xf - -C "$DST_DIR"; then
+		log_ok "$LABEL light backup completed: $DST_DIR"
+		return 0
+	fi
+
+	log_warning "$LABEL light backup had copy errors. Installation continues."
+	return 1
+}
+
+copy_files_by_pattern_optional() {
+	SRC_PATTERN=$1
+	DST_DIR=$2
+	LABEL=$3
+	FOUND=0
+	ERRORS=0
+
+	mkdir -p "$DST_DIR" || {
+		log_warning "Could not create $LABEL backup folder, skipping: $DST_DIR"
+		return 1
+	}
+
+	for FILE in $SRC_PATTERN; do
+		if [ ! -e "$FILE" ]; then
+			continue
+		fi
+		FOUND=1
+		cp -p "$FILE" "$DST_DIR/" || ERRORS=1
+	done
+
+	if [ $FOUND -eq 0 ]; then
+		log_warning "$LABEL files not found, skipping: $SRC_PATTERN"
+		return 0
+	fi
+
+	if [ $ERRORS -ne 0 ]; then
+		log_warning "$LABEL backup had copy errors."
+		return 1
+	fi
+
+	log_ok "$LABEL backup completed: $DST_DIR"
+	return 0
+}
+
+move_large_dir_to_persistent_backup() {
+	SRC_DIR=$1
+	DST_DIR=$2
+	LABEL=$3
+
+	if [ ! -d "$SRC_DIR" ]; then
+		log_info "$LABEL folder not found, skipping persistent move: $SRC_DIR"
+		return 0
+	fi
+
+	log_dir_size "$LABEL" "$SRC_DIR"
+	mkdir -p "$(dirname "$DST_DIR")" || {
+		log_warning "Could not create persistent $LABEL backup parent, leaving source unchanged: $(dirname "$DST_DIR")"
+		return 1
+	}
+
+	rm -rf "$DST_DIR"
+	if mv "$SRC_DIR" "$DST_DIR"; then
+		log_ok "$LABEL moved to persistent upgrade backup: $DST_DIR"
+		return 0
+	fi
+
+	log_warning "$LABEL could not be moved to persistent upgrade backup; leaving normal installation flow unchanged."
+	return 1
+}
+
+if [ -z "$PTEMPDIR" ] || [ -z "$PDIR" ] || [ -z "$LBHOMEDIR" ]; then
+	abort_install "Missing required upgrade arguments. PTEMPDIR='$PTEMPDIR' PDIR='$PDIR' LBHOMEDIR='$LBHOMEDIR'"
 fi
 
-echo "<INFO> Creating Plugin Backup folders"
-mkdir -p $LBPDATA/$PDIR/backup
-mkdir -p $LBPDATA/$PDIR/backup/bin
-mkdir -p $LBPDATA/$PDIR/backup/templates
-mkdir -p $LBPDATA/$PDIR/backup/webfrontend
-mkdir -p $LBPDATA/$PDIR/backup/webfrontend/html
-mkdir -p $LBPDATA/$PDIR/backup/webfrontend/htmlauth
-mkdir -p $LBPDATA/$PDIR/backup/config
-mkdir -p $LBPDATA/$PDIR/backup/cron
-mkdir -p $LBPDATA/$PDIR/backup/daemon
+UPGRADE_DIR="/tmp/${PTEMPDIR}_upgrade"
+PERSISTENT_UPGRADE_DIR="$LBHOMEDIR/data/plugins/${PDIR}_upgrade_${PTEMPDIR}"
 
-echo "<INFO> Copy existing CONFIG files to Backup folder"
-cp -p -v -r $5/config/plugins/$3/ $LBPDATA/$PDIR/backup/config
+log_space_status "before preupgrade backup"
+log_dir_size "Config" "$LBHOMEDIR/config/plugins/$PDIR"
+log_dir_size "Data" "$LBHOMEDIR/data/plugins/$PDIR"
+log_dir_size "Piper voices" "$LBHOMEDIR/webfrontend/html/plugins/$PDIR/VoiceEngines/piper-voices"
 
-echo "<INFO> Copy existing BIN files to Backup folder"
-cp -p -v -r $5/bin/plugins/$3/ $LBPDATA/$PDIR/backup/bin
+log_info "Creating temporary folders for upgrading"
+rm -rf "$UPGRADE_DIR"
+rm -rf "$PERSISTENT_UPGRADE_DIR"
+mkdir -p "$UPGRADE_DIR/config" \
+	 "$UPGRADE_DIR/data" \
+	 "$UPGRADE_DIR/webfrontend/images" \
+	 "$UPGRADE_DIR/templates" || abort_install "Could not create temporary upgrade folders: $UPGRADE_DIR"
+mkdir -p "$PERSISTENT_UPGRADE_DIR" || abort_install "Could not create persistent upgrade folder: $PERSISTENT_UPGRADE_DIR"
 
-echo "<INFO> Copy existing TEMPLATE files to Backup folder"
-cp -p -v -r $5/templates/plugins/$3/ $LBPDATA/$PDIR/backup/templates
+log_info "Backing up existing config files"
+copy_dir_contents_required "$LBHOMEDIR/config/plugins/$PDIR" "$UPGRADE_DIR/config/$PDIR" "Config"
 
-echo "<INFO> Copy existing HMTL files to Backup folder"
-cp -p -v -r $5/webfrontend/html/plugins/$3/ $LBPDATA/$PDIR/backup/webfrontend/html
+if [ ! -f "$UPGRADE_DIR/config/$PDIR/s4lox_config.json" ]; then
+	log_warning "Config backup does not contain s4lox_config.json: $UPGRADE_DIR/config/$PDIR/s4lox_config.json"
+else
+	log_ok "Main config file has been backed up."
+fi
 
-echo "<INFO> Copy existing HTMLAUTH files to Backup folder"
-cp -p -v -r $5/webfrontend/htmlauth/plugins/$3/ $LBPDATA/$PDIR/backup/webfrontend/htmlauth
+log_info "Backing up existing Sonos image files"
+copy_files_by_pattern_optional "$LBHOMEDIR/webfrontend/html/plugins/$PDIR/images/icon*" "$UPGRADE_DIR/webfrontend/images" "Sonos image"
 
-echo "<INFO> Copy existing CRON files to Backup folder"
-cp -p -v -r $5/system/cron/cron.01min/Sonos $LBPDATA/$PDIR/backup/cron/Sonos.cron01min
-cp -p -v -r $5/system/cron/cron.03min/Sonos $LBPDATA/$PDIR/backup/cron/Sonos.cron03min
-cp -p -v -r $5/system/cron/cron.hourly/Sonos $LBPDATA/$PDIR/backup/cron/Sonos.cron.hourly
-cp -p -v -r $5/system/cron/cron.daily/Sonos $LBPDATA/$PDIR/backup/cron/Sonos.cron.daily
-cp -p -v -r $5/system/cron/cron.weekly/Sonos $LBPDATA/$PDIR/backup/cron/Sonos.cron.weekly
+log_info "Moving large Piper voice files out of the plugin folder without copying them to /tmp"
+move_large_dir_to_persistent_backup \
+	"$LBHOMEDIR/webfrontend/html/plugins/$PDIR/VoiceEngines/piper-voices" \
+	"$PERSISTENT_UPGRADE_DIR/piper-voices" \
+	"Piper voices"
 
-echo "<INFO> Copy existing DAEMON file to Backup folder"
-cp -p -v -r $5/system/daemons/plugins/Sonos $LBPDATA/$PDIR/backup/daemon
+log_info "Moving large/generated TTS data out of the plugin data folder without copying it to /tmp"
+move_large_dir_to_persistent_backup \
+	"$LBHOMEDIR/data/plugins/$PDIR/tts" \
+	"$PERSISTENT_UPGRADE_DIR/data_tts" \
+	"TTS data"
 
-echo "<INFO> Creating temporary folders for upgrading"
-mkdir -p /tmp/$1\_upgrade
-mkdir -p /tmp/$1\_upgrade/config
-mkdir -p /tmp/$1\_upgrade/log
-mkdir -p /tmp/$1\_upgrade/data
-mkdir -p /tmp/$1\_upgrade/templates
-mkdir -p /tmp/$1\_upgrade/webfrontend
+log_info "Backing up existing plugin data without large/generated audio/model files"
+copy_data_light_optional "$LBHOMEDIR/data/plugins/$PDIR" "$UPGRADE_DIR/data/$PDIR" "Data"
 
-echo "<INFO> Backing up existing config files"
-cp -p -v -r $5/config/plugins/$3/ /tmp/$1\_upgrade/config
+log_info "Skipping log backup to keep zram/tmp usage low. Existing logs are not required for plugin restore."
 
-echo "<INFO> Backing up existing Sonos image files"
-cp -p -v -r $5/webfrontend/html/plugins/$3/images/icon* /tmp/$1\_upgrade/webfrontend
+log_info "Backing up existing text files"
+copy_files_by_pattern_optional "$LBHOMEDIR/templates/plugins/$PDIR/lang/t2s-text_*.*" "$UPGRADE_DIR/templates" "Text"
 
-echo "<INFO> Backing up existing log files"
-cp -p -v -r $5/log/plugins/$3/ /tmp/$1\_upgrade/log
+touch "$UPGRADE_DIR/PREUPGRADE_OK" || abort_install "Could not write preupgrade marker: $UPGRADE_DIR/PREUPGRADE_OK"
+log_ok "Preupgrade backup finished successfully. Persistent backup folder: $PERSISTENT_UPGRADE_DIR"
+log_space_status "after preupgrade backup"
 
-echo "<INFO> Backing up existing MP3 files"
-cp -p -v -r $5/data/plugins/$3/ /tmp/$1\_upgrade/data
-
-echo "<INFO> Backing up existing Text files"
-cp -v $5/templates/plugins/$3/lang/t2s-text_*.* /tmp/$1\_upgrade/templates
-
-# Exit with Status 0
 exit 0

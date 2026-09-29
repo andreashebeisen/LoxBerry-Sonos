@@ -1,0 +1,31 @@
+# Sonos4Lox Watchdog + UI (run as user loxberry)
+
+# --- Watchdog: list units (with args!) ---
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl list-unit-files --type=service --type=timer --no-legend --no-pager
+
+# --- Event Listener service ---
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl is-active sonos_event_listener.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl is-failed sonos_event_listener.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl start sonos_event_listener.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl restart sonos_event_listener.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl stop sonos_event_listener.service
+
+# --- Check-On-State oneshot service ---
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl is-active sonos_check_on_state.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl is-failed sonos_check_on_state.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl start sonos_check_on_state.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl restart sonos_check_on_state.service
+
+# --- Watchdog oneshot service ---
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl is-active sonos_watchdog.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl is-failed sonos_watchdog.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl start sonos_watchdog.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl restart sonos_watchdog.service
+
+# --- UI toggles: enable/disable + start/stop in one step ---
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl enable --now sonos_event_listener.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl disable --now sonos_event_listener.service
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl enable --now sonos_check_on_state.timer
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl disable --now sonos_check_on_state.timer
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl enable --now sonos_watchdog.timer
+loxberry ALL=(ALL) NOPASSWD: /bin/systemctl disable --now sonos_watchdog.timer
