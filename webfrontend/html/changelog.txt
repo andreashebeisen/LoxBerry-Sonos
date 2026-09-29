@@ -9,7 +9,7 @@
 			[Feature] Für Non-LoxBerry User besteht nun die Möglichkeit in ihrer Config die pws: für Wunderground anzugeben
  1.0.2		[Bugfix] Fehlernachricht an Loxone und Zurücksetzen des Fehlers korrigiert. Funktion war nicht aktiv.
 			[Bugfix] UDP-Port für Inbound Daten korrigiert. Skript nimmt jetzt UDP-Port aus der Plugin Config statt der MS Config.
- 1.0.3     [Bugfix] Support für XAMPP Windows hinzugefügt
+ 1.0.3      [Bugfix] Support für XAMPP Windows hinzugefügt
 			[Feature] Online Provider Google hinzugefügt
 			[Bugfix] Korrektur bei Einzel T2S aus Gruppe heraus
  1.0.4		[New] Datei grouping.php hinzugefügt
@@ -458,3 +458,95 @@
 			[IMPROVEMENT] Bei den Sound Profilen sind Auto Gruppierungen möglich
  5.8.4		[BUGFIX] Typo in index.cgi korrigiert
  5.8.6		[BUGFIX] Fixed play Funktion in Verbindung mit playlists
+			[BUGFIX] Fixed line-in selection
+			[BUGFIX] Fixed doorbell funktion (spielte zweitweise zweimal)
+			[IMPROVEMENT] AudioClip ist als Gruppenfunktion verfügbar
+			[NOTE] Sonos ARC ULTRA wurde als Soundbar hinzugefügt
+			[BUGFIX] Stabilisierung der Restore Funktion bei Gruppen TTS
+ 5.8.8		[BUGFIX] Fixed doorbell
+ 5.9.0		[IMPROVEMENT] sonosplaylist, nextradio und alle Sonos Favoriten Funktionen sind auch als Gruppenfunktion verfügbar
+			[IMPROVEMENT] Sound Profile optimiert und erweitert
+			[IMPROVEMENT] zeitgesteuerte Verfügbarkeit der einzelnen Player
+			[IMPROVEMENT] Gruppierungsfunktionen optimiert
+			[NOTE] Alle Radio Funktionen basierend auf dem alten TuneIn deaktiviert
+			[BUGFIX] fixed rampto by sonosplaylist, radioplaylist und pluginradio + zusätzlicher parameter zero
+ 5.9.1		[BUGFIX] fixed T2S bei Nichtangabe von Volume in der Syntax
+			[BUGFIX] fixed function zapzone
+ 5.9.2		[BUGFIX] optimized T2S (not Clip)
+			[BUGFIX] optimized zapzone
+			[BUGFIX] fixed rampto funktion in Verbindung mit Gruppen
+			[BUGFIX] fixed VI_MQTT Template (IP Adresse)
+ 5.9.3		[BUGFIX] replaced libapache2-mod-php by libapache2-mod-php8.2 in apt file (Bookworm)
+ 5.9.4		[BUGFIX] Diff. kleinere Optimierungen
+ 5.9.5		[IMPROVEMENT] Distribution abhängige APT files
+ 5.9.6		[BUGFIX] Funktion addmember gefixed
+			[IMPROVEMENT] Sound Profile sind jetzt auch für Gruppendurchsagen (sendgroumessage, say) und doorbell nutzbar
+			[BUGFIX] Funktion follow gefixed und optimiert
+			[IMPROVEMENT] Support für S1 Modelle verfügbar (TTS und Streaming)
+			[IMPROVEMENT] Möglichkeit eine Testnachricht über Plugin GUI zu generieren und auszugeben
+			[IMPROVEMENT] kleinere Optimierungen
+ 5.9.7		[BUGFIX] fixed Clip using single zone
+			[BUGFIX] fixed issue during updating/installation
+ 5.9.8		[BUGFIX] fixed typo in T2S
+ 5.9.9		[BUGFIX] fixed typo in member function
+			[BUGFIX] optimized grouping on T2S Groupmessage
+ 6.0.1		[IMPROVEMENT] Neuer Offline T2S provider Piper TTS hinzugefügt und Pico herausgenommen
+ 6.0.2		[IMPROVEMENT] Sound Profile optimiert
+			[IMPROVEMENT] Signifikante Performance Verbesserungen bei herkömmlichen Text-2-speech (synchrones Gruppieren, optimierte Voice Engines, beschleunigtes Sichern und Restore)
+			[IMPROVEMENT] Gruppenhandling optimiert (gilt auch für Audio Profile)
+			[IMPROVEMENT] sämtliche TTS Provider optimiert und mit Fallback Szenarien versehen
+			[IMPROVEMENT] Automatische Erkennung ob Player AudioClip kompatibel sind (S2 Player)
+			[IMPROVEMENT] Automatische Nutzung der AudioClip Funktion wenn alle beteiligte Player (member und master) kompatibel sind, Fallback normale TTS
+			[IMPROVEMENT] Fallback Voice zu Piper wenn Online Engine keine MP3 zurückgibt
+ 6.1.1		[IMPROVEMENT] Gruppenhandling Playlisten/Favoriten optmiert
+			[IMPROVEMENT] Automatisches laden Sprache/Stimme nach Enginewechsel
+			[IMPROVEMENT] Test Sprachausgabe on-the-fly (ohne speichern) zwischen Engines/Sprache/Stimme
+			[IMPROVEMENT] Optimierte Installation von Piper mit Fallback
+			[IMPROVEMENT] Auto discover der Player (kein Scan mehr notwendig)
+			[IMPROVEMENT] Event listener per MQTT implementiert (real Time max. Latenz: 2 Sek.)
+			[IMPROVEMENT] Player Online check als Service implementiert
+			[IMPROVEMENT] VLAN Support optimiert
+			[IMPROVEMENT] Gruppenfunktion zu playlisten, nextradio, playfavorite usw. hinzugefügt
+			[BUGFIX] Playbatch gefixed
+			[BUGFIX] reduced VoiceRSS handling
+			[BUGFIX] Abfallkalender gefixed und Validierung hinzugefügt
+ 6.1.2		[IMPROVEMENT] Auto Backup Konfiguration
+			[BUGFIX] fixed Radio Ansage bei pluginradio
+			[IMPROVEMENT] Kalender Validierung optimiert
+			[BUGFIX] Some minor changes in UI
+			[BUGFIX] Radio Station Ansage gefixed
+ 6.1.3		[BUGFIX] Zapzone gefixed (auch bei mehreren Calls mit unterschiedlichen Playern)
+			[BUGFIX] MQTT Status t2s_<RAUM> sendet 0 oder 1 bei Audioclip
+			[BUGFIX] MQTT Radio Namen werden gepusht
+			[BUGFIX] T2S Error Authenticating gefixed
+			[IMPROVEMENT] Zusätzliche Sprachen/Stimmen für Piper werden automatisch integriert
+			[IMPROVEMENT] Beim TV-Monitor sind die Player auswählbar die beim Einschalten gestoppt werden sollen
+			[BUGFIX] kleinere Fehler wurden behoben
+			[BUGFIX] MQTT Volume per Player bei Gruppenkonstellation wurde gefixed
+ 6.1.4		[IMPROVEMENT] UI neu gestaltet
+			[BUGFIX] TV Monitor optimiert
+ 6.1.5		[BUGFIX] follow me function gefixed
+			[BUGFIX] Folgefunktionen Cronjob gefixed
+			[BUGFIX] Surround Level Feld beim TV Monitor hinzugefügt
+			[IMPROVEMENT] UI etwas gepimpt und Validierung überarbeitet/optimiert
+			[IMPROVEMENT] Bei der Datenübertragung zum MS das UDP Protokoll (ohne Umweg über Loxberry MQTT) hinzugefügt
+			[IMPROVEMENT] Die XML Templates für die Datenübertragung überarbeitet und zusätzliche Info bereit gestellt
+			[IMPROVEMENT] Der TV Monitor untertützt mehrere Soundbars
+			[IMPROVEMENT] verschiedene Performance Optimierungen
+			[IMPROVEMENT] Bei der Engine Piper die Installation zusätzlicher Sprachen/Voices integriert
+ 6.1.6		[BUGFIX] time restrictions gefixed
+			[IMPROVEMENT] Möglichkeit das Plugin downgraden oder auch upgraden (siehe Tab Optionen)
+			[IMPROVEMENT] Hinzufügen von Playern wieder aktiviert, zusätzlich für Probleme im VLAN die Möglichkeit eines UNICAST Scans
+ 7.1.0      [IMPROVEMENT]kompletter Rework aller relevanten Dateien mit Focus auf Funktion und Error handling
+			[IMPROVEMENT] TTS Performance und Stabilität optimiert
+			[IMPROVEMENT] LoxBerry v4.x Themes Kompatibiltät optimiert
+			[IMPROVEMENT] für v4.x zwei Sonos eigene Themes verfügbar: Mac-Classic und Apple liquid-glass (Wallpaper individualisierbar) - Tab Optionen
+			[IMPROVEMENT] Testing optimiert und default Tests hinzugefügt (nur bei Loglevel: Debug) verfügbar
+			[IMPROVEMENT] Speicher optimierte Installation
+ 7.1.1		[BUGFIX] Bugfix beim Eventhandler gefixed (MQTT brach komplett ab wenn Fehler auftrat)
+			[IMPROVEMENT] Zusätzlich wird jetzt ein retain=0 geschickt wenn streaming/TV beendet wurde
+			[BUGFIX] Auto Discovery SUB fixed
+ 7.1.2		[BUGFIX] Auto Discovery und den EventHandler fixed
+ 7.1.3		[BUGFIX] Added Installation for x86_64
+ 7.2.0 		[IMPROVEMENT] Erweitertes Errorhandling der Online T2S Provider und im Fehlerfall Fallback auf Piper
+ 7.2.1 		[IMPROVEMENT] Wetteransage korrigiert (weather4lox)

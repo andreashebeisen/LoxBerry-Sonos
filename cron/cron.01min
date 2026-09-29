@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This is a sample cron file. According to it's name it will go to
 # ~/system/cron/cron.hourly. You may also let your Pluginscript create a
@@ -8,14 +8,33 @@
 # cron script will not be uninstalled cleanly.
 
 # Will be executed as user "loxberry".
+set -euo pipefail
 
+#---- BACKUP FALLS VERBINDUNG ZU LOXONE AUS IST ---
+CFG="REPLACELBPCONFIGDIR/s4lox_config.json"
+
+# Falls Config fehlt: abbrechen oder Default setzen
+if [[ ! -f "$CFG" ]]; then
+  echo "Config not found: $CFG" >&2
+  exit 0
+fi
+
+LOXONE="$(jq -r '.LOXONE.LoxDaten // "false"' "$CFG")"
+
+# check_on_state ausführen
+/usr/bin/php /opt/loxberry/webfrontend/html/plugins/sonos4lox/src/Core/Runtime/CheckState.php >/dev/null 2>&1 &
+
+#---- AUSFÜHRUNG ALLE 10 SEKUNDEN ----
 i=0
-while [ $i -lt 6 ]; do
-  /usr/bin/php REPLACELBPHTMLDIR/bin/push_loxone.php &
+while [[ $i -lt 6 ]]; do
+  # /usr/bin/php REPLACELBPHTMLDIR/bin/push_loxone.php &
   sleep 2
-  /usr/bin/php REPLACELBPHTMLDIR/bin/push_maxvol.php &
+  /usr/bin/php REPLACELBPHTMLDIR/src/Support/MaxVolumeEnforcer.php &
   sleep 2
-  /usr/bin/php REPLACELBPHTMLDIR/bin/tv_monitor.php &
-  sleep 6
+  /usr/bin/php REPLACELBPHTMLDIR/src/Support/TvMonitor.php run &
+  sleep 2
+  /usr/bin/php REPLACELBPHTMLDIR/src/Support/TimeRestrictionEnforcer.php &
+  sleep 4
   i=$(( i + 1 ))
 done
+
