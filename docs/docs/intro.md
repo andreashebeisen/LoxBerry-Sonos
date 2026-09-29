@@ -32,9 +32,16 @@ Um einen möglichst reibungslosen Betrieb des Plugins zu gewährleisten MÜSSEN 
 
 ### Zusammenfassung
 
-- **Alle Sonos Player am Netz lassen**
-- **Sonos Bridge aus dem Netzwerk entfernen**
-- **Sonos Player mit statischer IP Adressierung**
+- **Alle Sonos Player am Netz lassen** – Player benötigen bis zu 2 Minuten um im SonosNet verfügbar zu sein; abgeschaltete Player können T2S blockieren.
+- **Sonos Bridge aus dem Netzwerk entfernen** – die Bridge verursacht zunehmend Probleme, insbesondere bei WLAN/LAN-Mischinstallationen.
+- **Sonos Player mit statischer IP-Adressierung** – das Plugin steuert alle Player IP-basiert (max. 32 Player).
+- **LoxBerry IP statisch oder per DNS** – nach einer IP-Änderung des LoxBerry das Plugin einmal öffnen und speichern.
+
+:::warning[Probleme mit Player Discovery]
+
+Falls nach der Player Suche keine neuen Player erscheinen, die Multicast Einstellungen im Netzwerk prüfen (Fritzbox, Switch, Firewall, Virenscanner). Das Plugin nutzt SSDP/UPnP mit Multicast-Adresse **239.255.255.250 Port 1900**. Alternativ den UNICAST Scan mit Eingabe der Sonos Player ID ausführen.
+
+:::
 
 :::danger
 

@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-description: Player Online Check, Backup etc.
+description: Player Online Check, Backup & Restore etc.
 ---
 
 # Weitere Grundeinstellungen
@@ -9,7 +9,9 @@ description: Player Online Check, Backup etc.
 
 Das Plugin kann regelmäßig den Status aller Player prüfen ob diese im Netzwerk erreichbar sind. Das gilt **NUR** für User die ihre Sonos Player an schaltbaren Steckdosen angeschlossen haben, für alle anderen User ist diese Konfigurationsoption überflüssig (Off).
 
-## Backup
+## Backup & Restore
+
+Die Konfiguration wird **einmal täglich** automatisch gesichert und kann über den Button "**Restore**" (Restore Konfiguration von gestern) wiederhergestellt werden.
 
 Um eine Plugin Neuinstallation durchzuführen kann die gegenwärtige Konfiguration gesichert werden um anschließend das Plugin komplett zu deinstallieren und neu zu installieren. Nach der Neuinstallation erscheint automatisch ein Restore Button um die "**alte**" Konfiguration zu laden.
 
